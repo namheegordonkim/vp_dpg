@@ -1,6 +1,8 @@
 from threading import Thread
 
 import dearpygui.dearpygui as dpg
+import hydra
+from omegaconf import DictConfig
 from vispy import scene, app
 
 
@@ -23,7 +25,12 @@ def visualize_dpg_controller():
     dpg.destroy_context()
 
 
-def main():
+@hydra.main(config_name="config.yaml", config_path="./", version_base=None)
+def main(cfg: DictConfig):
+    if cfg["debug_yes"]:
+        import pydevd_pycharm
+        pydevd_pycharm.settrace('localhost', port=12345, stdoutToServer=True, stderrToServer=True, suspend=False)
+
     # simultaneous visualization of GUI and landscape
     canvas = scene.SceneCanvas(keys='interactive', bgcolor='white', size=(800, 600), show=True)
     # view = canvas.central_widget.add_view()
